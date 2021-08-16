@@ -5,6 +5,11 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     /// <summary>
+    /// Панель паузы
+    /// </summary>
+    public GameObject PausePanel;
+
+    /// <summary>
     /// Игрок
     /// </summary>
     public GameObject Player;
@@ -30,6 +35,7 @@ public class GameController : MonoBehaviour
         }
         set
         {
+            PausePanel.SetActive(value);
             Time.timeScale = value ? 0 : 1;
             pause = value;
         }
@@ -38,14 +44,17 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// Событие нажатой кнопки
+    /// Событие зажатой кнопки
     /// </summary>
     private void OnKey()
     {
-        // Управление игроком
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
-        player.Move(x, y);
+        if (!Pause)
+        {
+            // Управление игроком
+            float x = Input.GetAxis("Horizontal");
+            float y = Input.GetAxis("Vertical");
+            player.Move(x, y);
+        }
     }
 
 
@@ -55,7 +64,10 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void OnKeyDown()
     {
-
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Pause = !Pause;
+        }
     }
 
 
@@ -76,10 +88,13 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        // Вращение камеры игрока
-        float x = Input.GetAxis("Mouse X");
-        float y = Input.GetAxis("Mouse Y");
-        player.Rotate(x, y);
+        if (!Pause)
+        {
+            // Вращение камеры игрока
+            float x = Input.GetAxis("Mouse X");
+            float y = Input.GetAxis("Mouse Y");
+            player.Rotate(x, y);
+        }
         
         // Вызов событий
         if (Input.anyKey) { OnKey(); }
